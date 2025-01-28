@@ -54,3 +54,28 @@ bool repeating_timer_callback(struct repeating_timer *t) {
 
     return true; // Retorna true para continuar o temporizador de repetição.
 }
+
+int main() {
+
+    // Inicializa a comunicação serial para permitir o uso de printf para depuração.
+    stdio_init_all();
+    
+    // Configura o pino do LED como saída.
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    gpio_put(LED_PIN, 0);
+    
+    // Configura o pino do botão como entrada com resistor de pull-up interno.
+    gpio_init(BTN_A_PIN);
+    gpio_set_dir(BTN_A_PIN, GPIO_IN);
+    gpio_pull_up(BTN_A_PIN);
+    
+    // Configura o temporizador repetitivo para verificar o estado do botão a cada 100 ms.
+    struct repeating_timer timer;
+    add_repeating_timer_ms(100, repeating_timer_callback, NULL, &timer);
+    
+    // O loop principal permanece vazio, pois o controle do LED e do botão é gerenciado pelo temporizador.
+    while (true) {
+        tight_loop_contents(); // Função que otimiza o loop vazio para evitar consumo excessivo de CPU.
+    }
+}
