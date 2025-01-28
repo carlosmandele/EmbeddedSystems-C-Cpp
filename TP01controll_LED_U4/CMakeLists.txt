@@ -46,7 +46,7 @@ pico_enable_stdio_usb(TP01controll_LED_U4 1)
 
 # Add the standard library to the build
 target_link_libraries(TP01controll_LED_U4
-        pico_stdlib)
+        pico_stdlib hardware_timer)
 
 # Add the standard include files to the build
 target_include_directories(TP01controll_LED_U4 PRIVATE
