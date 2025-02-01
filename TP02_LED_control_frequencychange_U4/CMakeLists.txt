@@ -46,7 +46,7 @@ pico_enable_stdio_usb(TP02_LED_control_frequencychange_U4 1)
 
 # Add the standard library to the build
 target_link_libraries(TP02_LED_control_frequencychange_U4
-        pico_stdlib)
+        pico_stdlib hardware_timer)
 
 # Add the standard include files to the build
 target_include_directories(TP02_LED_control_frequencychange_U4 PRIVATE
