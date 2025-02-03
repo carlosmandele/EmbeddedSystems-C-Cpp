@@ -32,3 +32,42 @@ bool turn_off_callback(struct repeating_timer *t) {
     return false; // Para o callback atual
 }
 
+// Função de callback do temporizador repetitivo para verificar os botões
+bool repeating_timer_callback(struct repeating_timer *t) {
+    static absolute_time_t last_press_time = 0;
+    static bool button_a_last_state = false;
+    static bool button_b_last_state = false;
+
+    // Verifica o estado atual dos botões (pressionado = LOW, liberado = HIGH)
+    bool button_a_pressed = !gpio_get(BTN_A_PIN);
+    bool button_b_pressed = !gpio_get(BTN_B_PIN);
+
+    // Verifica se o botão A foi pressionado e realiza o debounce.
+    if (button_a_pressed && !button_a_last_state &&
+        absolute_time_diff_us(last_press_time, get_absolute_time()) > 200000) {
+        last_press_time = get_absolute_time();
+        button_a_last_state = true;
+        button_press_count++;
+
+        // Verifica se o botão A foi pressionado cinco vezes
+        if (button_press_count == 5) {
+            printf("Botão A pressionado 5 vezes. LED piscando...\n");
+            add_repeating_timer_ms(100, turn_off_callback, NULL, NULL);
+        }
+    } else if (!button_a_pressed) {
+        button_a_last_state = false; // Atualiza o estado do botão como liberado quando ele não está pressionado.
+    }
+
+    // Verifica se o botão B foi pressionado e realiza o debounce.
+    if (button_b_pressed && !button_b_last_state &&
+        absolute_time_diff_us(last_press_time, get_absolute_time()) > 200000) {
+        last_press_time = get_absolute_time();
+        button_b_last_state = true;
+        change_frequency = !change_frequency; // Altera a frequência do LED
+        printf("Botão B pressionado. Frequência do LED %s para %d Hz.\n", change_frequency ? "alterada" : "alterada", change_frequency ? 1 : 10);
+    } else if (!button_b_pressed) {
+        button_b_last_state = false; // Atualiza o estado do botão como liberado quando ele não está pressionado.
+    }
+
+    return true; // Retorna true para continuar o temporizador de repetição.
+}
