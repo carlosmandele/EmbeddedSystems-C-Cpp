@@ -46,7 +46,7 @@ pico_enable_stdio_usb(TP03_UARTinterface_data 1)
 
 # Add the standard library to the build
 target_link_libraries(TP03_UARTinterface_data
-        pico_stdlib)
+        pico_stdlib hardware_irq hardware_uart)
 
 # Add the standard include files to the build
 target_include_directories(TP03_UARTinterface_data PRIVATE
